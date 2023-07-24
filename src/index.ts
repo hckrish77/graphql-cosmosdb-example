@@ -1,18 +1,7 @@
 import { ApolloServer, gql } from 'apollo-server';
-
-// Your GraphQL schema, this defines the types and operations for your API
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-
-// Root resolver, this defines the resolver functions for the API operations
-const resolvers = {
-  Query: {
-    hello: () => 'Hello, Apollo Server with TypeScript!',
-  },
-};
+import typeDefs from "./schema";
+import resolvers from "./resolvers";
+import { getCosmosDataById } from "./cosmosdb";
 
 // Create an Apollo Server instance
 const server = new ApolloServer({
@@ -24,3 +13,32 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`Apollo Server running at ${url}`);
 });
+
+// Example query to fetch CosmosData by ID
+const EXAMPLE_ID = "e8cdd0cb-22fa-485e-a299-a528d9357b89";
+
+//Uncomment the following block to test the query
+server.executeOperation({
+  query: `
+    query GetCosmosData($id: String!) {
+      getCosmosData(id: $id) {
+        id
+        region
+        field {
+          shortdesc
+          longdesc
+          scope
+          value
+        }
+        _rid
+        _self
+        _etag
+        _attachments
+        _ts
+      }
+    }
+  `,
+  variables: { id: EXAMPLE_ID },
+})
+.then((result) => console.log("Example Query Result:", result.data))
+.catch((error) => console.error("Example Query Error:", error));

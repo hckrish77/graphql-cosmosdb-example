@@ -9,5 +9,6 @@
     - sudo npm install -g typescript
 5. command to run the TypeScript compiler in watch mode (automatically compiles changes and restarts server):
     - tsc --watch
+6. npm install @azure/cosmos
 
  
